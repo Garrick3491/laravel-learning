@@ -3,3 +3,31 @@ recipe: laravel
 config:
   webroot: public
   php: "8.1"
+  database: mysql
+services:
+  appserver:
+    type: php:8.1
+    xdebug: "debug,develop"
+    build_as_root:
+      # Note that you will want to use the script for the major version of node you want to install
+      # See: https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
+      - curl -sL https://deb.nodesource.com/setup_14.x | bash -
+      - apt-get install -y nodejs
+  phpmyadmin:
+    type: phpmyadmin
+    hosts:
+      - mysql57
+  database:
+    type: mysql:5.7
+    portforward: false
+    creds:
+      user: test
+      password: test
+      database:  test
+  node:
+    type: node:14
+tooling:
+  node:
+    service: appserver
+  npm:
+    service: appserver

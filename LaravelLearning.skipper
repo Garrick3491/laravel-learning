@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<skipper version="3.3.1.1787" mvc="Laravel" orm="Laravel" name="Laravel-learning" uuid="4d419c29-9f5e-42f9-a13d-026d1e58e80a">
+  <orm-attributes>
+    <attribute name="migrations-path">database/migrations</attribute>
+  </orm-attributes>
+  <module name="\Application module" local-name="Application module" namespace="\App\Models" local-namespace="App\Models" export-format="Laravel" export-path="." uuid="ffc8dba9-4878-4d0e-a6fd-07743abaa9d5">
+    <entity name="\App\Models\SampleEntity" local-name="SampleEntity" namespace="\App\Models" uuid="b6dca109-0fff-4574-87da-4ffb8ad8c0f8">
+      <field name="id" type="bigInteger" required="true" unique="true" primary="true" unsigned="true" auto-increment="true" uuid="ece882e5-6b85-4923-ab08-a50e7b515edb"/>
+      <field name="created_at" type="timestamp" uuid="45683df3-3331-48fb-a9f0-7e7d1bce4c55"/>
+      <field name="updated_at" type="timestamp" uuid="795d95ad-1ef9-4cd3-bdf0-e84f77b27c5c"/>
+      <field name="name" type="string" size="255" uuid="efe4e688-4791-46e5-9db7-0b17435425c1"/>
+    </entity>
+  </module>
+  <visual-data>
+    <entity uuid="b6dca109-0fff-4574-87da-4ffb8ad8c0f8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="10" position-y="20"/>
+    <module uuid="ffc8dba9-4878-4d0e-a6fd-07743abaa9d5" bg-color="#FEFCE8" position-x="61" position-y="72" size-x="11" size-x2="243" size-y="22" size-y2="191"/>
+    <project uuid="4d419c29-9f5e-42f9-a13d-026d1e58e80a" size-x="0" size-x2="354" size-y="0" size-y2="313"/>
+  </visual-data>
+</skipper>
