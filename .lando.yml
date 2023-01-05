@@ -25,7 +25,7 @@ services:
       password: test
       database:  test
   node:
-    type: node:14
+    type: node:16
 tooling:
   node:
     service: appserver

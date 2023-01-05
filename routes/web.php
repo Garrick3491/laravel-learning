@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ChirpController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeviceUploadController;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,17 +14,17 @@ use App\Http\Controllers\ChirpController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/', function () {
-    return view('welcome');
+Route::post('/device-upload', [
+    DeviceUploadController::class, 'uploadFile'
+])->middleware(['auth', 'verified'])->name('device-upload');
+
+
+Route::post('/tokens/create', function(Request $request) {
+    $token = $request->user()->createToken('api_key');
+
+    return ['token' => $token];
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::resource('chirps', ChirpController::class)
-->only(['index', 'store', 'edit', 'update', 'destroy'])->middleware(['auth', 'verified']);
-
 
 require __DIR__.'/auth.php';
