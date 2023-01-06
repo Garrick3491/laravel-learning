@@ -29,6 +29,12 @@ class DeviceController extends Controller
 
         foreach ($devices as $device)
         {
+
+            if (!array_filter($device))
+            {
+                continue;
+            }
+            
             try {
                 $createdDevices[] = $deviceFactory->createFromArray($device);
             }
