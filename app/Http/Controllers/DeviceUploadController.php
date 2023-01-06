@@ -4,39 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Device;
-use League\Csv\Reader;
+use App\UploadHandler\CsvHandler;
 use League\Csv\Statement;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use App\FileUpload\UploadHandler;
+use App\DeviceHandler\DeviceUploadHandler;
 use App\Providers\RouteServiceProvider;
 
 class DeviceUploadController extends Controller
 {
-    public function uploadFile(Request $request, UploadHandler $uploadHandler)
+    public function uploadFile(Request $request, DeviceUploadHandler $uploadHandler, CsvHandler $csvHandler)
     {
         $request->validate([
-            'file' => 'mimes:csv|max:2048'
+            'file' => 'mimes:csv'
         ]);
 
         $file = $request->file('file');
 
-        $destinationPath = 'uploads';
-        Storage::put('uploads/'.$request->user()->id .'/' . $file->getClientOriginalName(), file_get_contents($file->getRealPath()));
-
-        $string = Storage::get('uploads/'.$request->user()->id .'/' . $file->getClientOriginalName());
-
-        $csv = Reader::createFromString($string);
-        $csv->setHeaderOffset(0);
-
-        $json = json_encode($csv);
+        $json = $csvHandler->saveCsvAndConvertToJson($file, $request->user()->id);
 
         $successMessage = $uploadHandler->uploadDevices($json);
         
-        dd($successMessage);
-
         if ($successMessage = 'Success!')
         {
             Session::flash('sucess', 'The device upload was successful!');

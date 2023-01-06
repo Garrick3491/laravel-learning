@@ -19,4 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->apiResource('devices', DeviceController::class);
+Route::apiResource('devices', DeviceController::class)
+//->apiResource('devices', DeviceController::class)
+;

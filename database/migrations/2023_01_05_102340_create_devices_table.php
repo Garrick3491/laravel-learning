@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('manufacturer');
             $table->string('model');
             $table->date('install_date');
-            $table->text('note');
+            $table->text('notes');
             $table->string('eui');
             $table->string('serial_number');       
             $table->timestamps();

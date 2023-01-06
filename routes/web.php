@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeviceUploadController;
+use App\Http\Controllers\DeviceController;
 use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,11 @@ Route::post('/device-upload', [
 Route::post('/tokens/create', function(Request $request) {
     $token = $request->user()->createToken('api_key');
 
-    return ['token' => $token];
+    return ['token' => $token->plainTextToken];
 });
+
+Route::get('/device/{id}/update', [DeviceController::class, 'updateDeviceForm'])->middleware(['auth', 'verified'])->name('update-device-form');
+Route::post('/device/{id}/update', [DeviceController::class, 'updateDevicePost'])->middleware(['auth', 'verified'])->name('update-device-post');
+Route::get('/device/{id}/delete', [DeviceController::class, 'deleteDevice'])->middleware(['auth', 'verified'])->name('delete-device');
 
 require __DIR__.'/auth.php';

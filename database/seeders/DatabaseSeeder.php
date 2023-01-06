@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         //     'password' => Hash::make(env('USER_DEFAULT_PASSWORD'))
         // ]);
 
-        $device = Device::factory(5)->create();
+        // $device = Device::factory(5)->create();
 
 
         // \App\Models\User::factory(10)->create();

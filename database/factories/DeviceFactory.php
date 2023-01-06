@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Device;
+use App\Exceptions\Api\MissingDataException;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Device>
  */
@@ -25,26 +27,48 @@ class DeviceFactory extends Factory
             'manufacturer' => $this->faker->sentence,
             'model' => $this->faker->sentence,
             'install_date' => $this->faker->dateTime,
-            'note' => $this->faker->paragraph,
+            'notes' => $this->faker->paragraph,
             'eui' => $this->faker->uuid,
             'serial_number' => $this->faker->uuid
         ];
     }
 
-    public function createFromArray(array $devicesArray)
+    public function createFromArray(array $deviceArray)
     {
-        $device = Device::create();
-        $device->name = $deviceArray['name'];
-        $device->address = $deviceArray['address'];
-        $device->longitude = $deviceArray['logitude'];
-        $device->latitude = $deviceArray['latitude'];
-        $device->device_type = $deviceArray['device_type'];
-        $device->manufacturer = $deviceArray['manugacturer'];
-        $device->model = $deviceArray['model'];
-        $device->install_date = new \DateTime($deviceArray['install_date']);
-        $device->notes = $deviceArray['notes'];
-        $device->eui = $deviceArray['eui'];
-        $device->serial_number = $device['serial_number'];
+        $keys = [
+           'name',
+           'address',
+           'longitude',
+           'latitude',
+           'device_type',
+           'manufacturer',
+           'model',
+           'install_date',
+           'notes',
+           'eui',
+           'serial_number'
+        ];
+
+        foreach ($keys as $key)
+        {
+            if (!array_key_exists($key, $deviceArray))
+            {
+                throw new MissingDataException($key);
+            }
+        }
+
+        $device = Device::create($deviceArray);
+        // $device->name = $deviceArray['name'];
+        // $device->address = $deviceArray['address'];
+        // $device->longitude = $deviceArray['longitude'];
+        // $device->latitude = $deviceArray['latitude'];
+        // $device->device_type = $deviceArray['device_type'];
+        // $device->manufacturer = $deviceArray['manufacturer'];
+        // $device->model = $deviceArray['model'];
+        // $device->install_date = new \DateTime($deviceArray['install_date']);
+        // $device->notes = $deviceArray['notes'];
+        // $device->eui = $deviceArray['eui'];
+        // $device->serial_number = $device['serial_number'];
         $device->save();
 
         return $device;
