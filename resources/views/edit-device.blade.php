@@ -11,57 +11,92 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div>
                         <h1>Device</h1>
-                        <ul class="pl-3">
-                                <form class="panel-body" action="/device/{{$device->id}}/update" method="POST">
-                                    @csrf
-                                    <input name="id" type="hidden" value="{{$device->id}}">
-                                    <fieldset class="form-group">
-                                    <label for="form-group-input-1">Name</label>
-                                        <input type="text" name="name" class="form-control" id="form-group-input-1" value="{{$device->name}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Address</label>
-                                        <input type="text" name="address" class="form-control" id="form-group-input-1" value="{{$device->address}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Latitude</label>
-                                        <input type="text" name="latitude" class="form-control" id="form-group-input-1" value="{{$device->latitude}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Longitude</label>
-                                        <input type="text" name="longitude" class="form-control" id="form-group-input-1" value="{{$device->longitude}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Model</label>
-                                        <input type="text" name="model" class="form-control" id="form-group-input-1" value="{{$device->model}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Device Type</label>
-                                        <input type="text" name="device_type" class="form-control" id="form-group-input-1" value="{{$device->device_type}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Manufacturer</label>
-                                        <input type="text" name="manufacturer" class="form-control" id="form-group-input-1" value="{{$device->manufacturer}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Install Date</label>
-                                        <input type="date" name="install_date" class="form-control" id="form-group-input-1" value="{{$device->install_date}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Notes</label>
-                                        <input type="text" name="notes" class="form-control" id="form-group-input-1" value="{{$device->notes}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">EUI</label>
-                                        <input type="text" name="eui" class="form-control" id="form-group-input-1" value="{{$device->eui}}">
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <label for="form-group-input-1">Serial Number</label>
-                                        <input type="text" name="serial_number" class="form-control" id="form-group-input-1" value="{{$device->serial_number}}">
-                                    </fieldset>
-                                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
-                                </form>
-                        <ul>
+                        <form action="/device/{{$device->id}}/update" method="POST" class="w-full max-w-7xl">
+                            @csrf
+                            <input name="id" type="hidden" value="{{$device->id}}">
+                            <div class="flex flex-wrap -mx-3 mb-6">
+                                <div class="w-full px-3">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-name">
+                                    Name
+                                </label>
+                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-name" type="text" value="{{$device->name}}" name="name">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap -mx-3 mb-6">
+                                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-address">
+                                        Address
+                                    </label>
+                                    <textarea class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-address" type="text" name="address">{{$device->address}}</textarea>
+                                </div>
+                                <div class="w-full md:w-1/3 px-3">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-latitude">
+                                        Latitude
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-latitude" type="text" value="{{$device->latitude}}" name="latitude">
+                                </div>
+                                <div class="w-full md:w-1/3 px-3">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-longitude">
+                                        Longitude
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-longitude" type="text" value="{{$device->longitude}}" name="longitude">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap -mx-3 mb-6">
+                                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-model">
+                                        Model
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-model" type="text" value="{{$device->model}}" name="model">
+                                </div>
+                                <div class="w-full md:w-1/3 px-3">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-device-type">
+                                        Device Type
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-device-type" type="text" value="{{$device->device_type}}" name="device_type">
+                                </div>
+                                <div class="w-full md:w-1/3 px-3">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-manufacturer">
+                                        Manufacturer
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="manufacturer" id="grid-manufacturer" type="text" value="{{$device->manufacturer}}">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap -mx-3 mb-6">
+                                <div class="w-full px-3">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-install-date">
+                                    Install Date
+                                </label>
+                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-install-date" type="date" value="{{$device->install_date}}" name="install_date">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap -mx-3 mb-6">
+                                <div class="w-full px-3">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-notes">
+                                    Notes
+                                </label>
+                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-notes" type="text" value="{{$device->notes}}" name="notes">
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap -mx-3 mb-6">
+                                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-eui">
+                                        EUI
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-eui" type="text" name="eui" value="{{$device->eui}}">
+                                </div>
+                                <div class="w-full md:w-1/2 px-3">
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-serial-number">
+                                        Serial Number
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-serial-number" type="text" value="{{$device->serial_number}}" name="serial_number">
+                                </div>
+                                
+                            </div>
+                            <div class="flex flex-wrap -mx-3 mb-6">
+                                <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Submit</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

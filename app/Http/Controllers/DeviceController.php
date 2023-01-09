@@ -47,7 +47,7 @@ class DeviceController extends Controller
 
         if ($updateSuccess)
         {
-            return redirect()->to('/device/'.$attributes['id']);
+            return redirect()->to('/');
         }
     }
 

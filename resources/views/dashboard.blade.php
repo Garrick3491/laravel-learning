@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+                    <div class="max-w-7xl p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                         <form action="{{route('device-upload')}}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 @if ($message = Session::get('success'))
@@ -43,12 +43,10 @@
                     </div>
                         <br>
                         @foreach ($devices as $device)
-                        <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-                            <a href="#">
-                                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                        {{ $device->name }}
-                                </h5>
-                            </a>
+                        <div class="max-w-7xl p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                    {{ $device->name }}
+                            </h5>
                             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Address: {{$device->address}}</p>
                             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Lat Long: {{$device->latitude}}, {{$device->longitude}}</p>
                             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Device: {{ $device->model}} - {{ $device->device_type }} - {{$device->manufacturer}}</p>
