@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 |
 */
 Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/device/{id}', [DeviceController::class, 'viewDevice'])->middleware(['auth', 'verified'])->name('view-device');
 
 Route::post('/device-upload', [
     DeviceUploadController::class, 'uploadFile'

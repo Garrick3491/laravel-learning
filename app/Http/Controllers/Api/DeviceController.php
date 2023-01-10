@@ -14,7 +14,7 @@ class DeviceController extends Controller
 {
     public function index()
     {
-        $devices = Device::paginate(5);
+        $devices = Device::paginate(10);
 
         $devices->withPath(Route('dashboard'));
 
