@@ -22,6 +22,10 @@ Route::post('/device-upload', [
     DeviceUploadController::class, 'uploadFile'
 ])->middleware(['auth', 'verified'])->name('device-upload');
 
+Route::post('/device-upload/approve', [
+    DeviceUploadController::class, 'approvedFile'
+])->middleware(['auth', 'verified'])->name('device-upload-approve');
+
 
 Route::post('/tokens/create', function(Request $request) {
     $token = $request->user()->createToken('api_key');

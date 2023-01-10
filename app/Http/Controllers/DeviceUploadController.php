@@ -25,6 +25,18 @@ class DeviceUploadController extends Controller
 
         $csv = $csvHandler->saveCsvAndReturnArrayOfRecords($file, $request->user()->id);
 
+
+        return view('approve', [
+            'filename' => $file->getClientOriginalName(),
+            'recordCount' => count($csv),
+            'csvJson' => json_encode($csv)
+        ]);
+    }
+
+    public function approvedFile(Request $request, DeviceUploadHandler $uploadHandler)
+    {
+        $csv = json_decode($request->get('csv'), true);
+
         $numberOfJobsPerMin = 25;
 
         $runNumber = 0;
@@ -43,7 +55,7 @@ class DeviceUploadController extends Controller
 
             if ($runNumber % $numberOfJobsPerMin == 0)
             {
-                $delay = 60 * $cycle;
+                $delay = 30 * $cycle;
                 $cycle += 1;
             }
             // dd(json_encode($deviceRecord));
