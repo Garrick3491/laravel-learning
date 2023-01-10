@@ -13,10 +13,9 @@ class ApiDeviceHandler
     // Returns a collection of Devices
     public function getAllDevices(int $page = 1): ?\StdClass
     {
-        
         $response = Http::
         // withToken(Auth::user()->tokens->last()->token)->accept('application/json')->
-        get(Route('devices.index') . '?page=' . $page, ['token' => env('API_KEY')]);
+        get(Route('devices.index') . '?page=' . $page . '&token=' . env('API_KEY'));
 
         if ($response->status() > 200)
         {
