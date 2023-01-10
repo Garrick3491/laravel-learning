@@ -8,12 +8,15 @@ use App\Models\Device;
 use App\Providers\RouteServiceProvider;
 use Database\Factories\DeviceFactory;
 use App\Exceptions\Api\MissingDataException;
+use Illuminate\Support\Facades\Route;
 
 class DeviceController extends Controller
 {
     public function index()
     {
-        $devices = Device::all();
+        $devices = Device::paginate(5);
+
+        $devices->withPath(Route('dashboard'));
 
         return response()->json($devices->toJson(), 200);
     }
@@ -21,31 +24,18 @@ class DeviceController extends Controller
     public function store(Request $request, DeviceFactory $deviceFactory)
     {
         $json = $request->get('json');
-        $devices = json_decode($json, true);
+        $device = json_decode($json, true);
 
-        $createdDevices = [];
-
-
-
-        foreach ($devices as $device)
+        try {
+            $deviceFactory->createFromArray($device);
+        }
+        catch(MissingDataException $e)
         {
-
-            if (!array_filter($device))
-            {
-                continue;
-            }
-            
-            try {
-                $createdDevices[] = $deviceFactory->createFromArray($device);
-            }
-            catch(MissingDataException $e)
-            {
-                return response()->json('Row ' . count($createdDevices) +1 . ' caused an error with missing data for column: ' . $e->getMessage(), 500);
-            }
+            return response()->json('Row ' . $device['name'] . ' caused an error with missing data for column: ' . $e->getMessage(), 500);
         }
         
 
-        return response()->json(count($createdDevices) . ' Devices have been created', 200);
+        return response()->json(null, 200);
 
     }
 

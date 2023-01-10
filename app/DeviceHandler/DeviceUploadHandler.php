@@ -6,11 +6,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 class DeviceUploadHandler
 {
-    public function uploadDevices(string $json): string
+    public function uploadDevice(string $json): string
     {
-        $response = Http::withHeaders([
-            // 'Authorization' => Auth::user()->tokens->last()->token
-        ])->post(Route('devices.store'), ['json' => $json]);
+        $response = Http::withToken(Auth::user()->tokens->last()->token)->post(Route('devices.store'), ['json' => $json]);
 
         if ($response->status() > 200)
         {

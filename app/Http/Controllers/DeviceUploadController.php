@@ -8,9 +8,10 @@ use App\UploadHandler\CsvHandler;
 use League\Csv\Statement;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use App\DeviceHandler\DeviceUploadHandler;
 use App\Providers\RouteServiceProvider;
+use App\Jobs\ProcessDevice;
+use App\Http\Controllers\Session;
 
 class DeviceUploadController extends Controller
 {
@@ -22,16 +23,33 @@ class DeviceUploadController extends Controller
 
         $file = $request->file('file');
 
-        $json = $csvHandler->saveCsvAndConvertToJson($file, $request->user()->id);
+        $csv = $csvHandler->saveCsvAndReturnArrayOfRecords($file, $request->user()->id);
 
-        $successMessage = $uploadHandler->uploadDevices($json);
-        
-        if ($successMessage = 'Success!')
+        $numberOfJobsPerMin = 25;
+
+        $runNumber = 0;
+
+        $cycle = 1;
+
+        $delay = 1;
+
+        foreach ($csv as $deviceRecord)
         {
-            Session::flash('sucess', 'The device upload was successful!');
-        }
-        else {
-            Session::flash('error', $success);
+
+            if (!array_filter($deviceRecord))
+            {
+                continue;
+            }
+
+            if ($runNumber % $numberOfJobsPerMin == 0)
+            {
+                $delay = 60 * $cycle;
+                $cycle += 1;
+            }
+            // dd(json_encode($deviceRecord));
+            // dispatch(new ProcessDevice(json_encode($deviceRecord)));
+            ProcessDevice::dispatch(json_encode($deviceRecord), Auth::user()->tokens->last()->token)->delay($delay);
+            $runNumber += 1;
         }
 
         return redirect()->intended(RouteServiceProvider::HOME);

@@ -11,60 +11,61 @@ use App\Exceptions\Api\ApiErrorException;
 class ApiDeviceHandler
 {
     // Returns a collection of Devices
-    public function getAllDevices(): Collection
+    public function getAllDevices(int $page = 1): ?\StdClass
     {
-        $response = Http::get(Route('devices.index'));
-
-        if ($response->status() > 200)
-        {
-            throw new ApiErrorException($response->getErrorMessage());
-        }
-
-        $data = collect(json_decode($response->json()));
         
-        return $data;
-    }
-
-    public function getDevice(int $id)
-    {
-        $response = Http::get(Route('devices.show', $id));
+        $response = Http::
+        // withToken(Auth::user()->tokens->last()->token)->accept('application/json')->
+        get(Route('devices.index') . '?page=' . $page, ['token' => env('API_KEY')]);
 
         if ($response->status() > 200)
         {
-            throw new ApiErrorException($response->getErrorMessage());
+            if (gettype(json_decode($response->body())) == 'string')
+            {
+                throw new ApiErrorException(json_decode($response->body()));        
+            }
+
+            throw new ApiErrorException('Something has gone wrong: ' . $response->reason());
         }
 
         $data = json_decode($response->json());
         
-        // dd($data);
+        return $data;
+    }
 
+    public function getDevice(int $id): \StdClass
+    {
+        $response = Http::withToken(Auth::user()->tokens->last()->token)->get(Route('devices.show', $id), ['token' => env('API_KEY')]);
+
+        if ($response->status() > 200)
+        {
+            throw new ApiErrorException(json_decode($response->body())->message);
+        }
+
+        $data = json_decode($response->json());
+        
         return $data;
     }
     
     public function updateDevice(array $deviceDetails):bool
     {
-        $response = Http::withHeaders([
-            // 'Authorization' => Auth::user()->tokens->last()->token
-        ])->put(Route('devices.update', $deviceDetails['id']), ['json' => json_encode($deviceDetails)]);
+        $response = Http::withToken(Auth::user()->tokens->last()->token)->put(Route('devices.update', $deviceDetails['id']), ['json' => json_encode($deviceDetails),'token' => env('API_KEY')]);
 
         if ($response->status() > 200)
         {
-            dd($response->reason());
-            throw new ApiErrorException($response->reason());
+            throw new ApiErrorException(json_decode($response->body())->message);
         }
 
         return true;
     }
 
-    public function deleteDevice(int $deviceId)
+    public function deleteDevice(int $deviceId): bool
     {
-        $response = Http::withHeaders([
-            // 'Authorization' => Auth::user()->tokens->last()->token
-        ])->delete(Route('devices.destroy', $deviceId));
+        $response = Http::withToken(Auth::user()->tokens->last()->token)->delete(Route('devices.destroy', $deviceId), ['token' => env('API_KEY')]);
 
         if ($response->status() > 200)
         {
-            throw new ApiErrorException($response->reason());
+            throw new ApiErrorException(json_decode($response->body())->message);
         }
 
         return true;
