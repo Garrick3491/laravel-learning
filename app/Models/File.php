@@ -12,7 +12,8 @@ class File extends Model
     protected $fillable = [
         'name',
         'location',
-        'user_id'
+        'user_id',
+        'expected_device_count'
     ];
 
     

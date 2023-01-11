@@ -28,7 +28,8 @@ class FileFactory extends Factory
         $keys = [
             'name',
             'location',
-            'user_id'
+            'user_id',
+            'expected_device_count'
         ];
 
         foreach ($keys as $key)

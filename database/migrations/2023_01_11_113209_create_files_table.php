@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name');
             $table->text('location');
+            $table->integer('expected_device_count');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
     }

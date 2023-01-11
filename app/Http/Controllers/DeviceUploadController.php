@@ -28,17 +28,18 @@ class DeviceUploadController extends Controller
 
         $fileName = $csvHandler->saveCsvAndReturnFileName($file, $request->user()->id);
 
+        $csv = $csvHandler->getFileForFileName($fileName);
+
         $modelFile = $fileFactory->createFromArray(
             [
                 'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
                 'location' => $fileName,
-                'user_id' => Auth::user()->id
+                'user_id' => Auth::user()->id,
+                'expected_device_count' => count($csv)
             ]
         );
 
-
         return redirect()->route('approve-list', $modelFile);
-
     }
 
     public function approveList(Request $request, File $file, CsvHandler $csvHandler)
@@ -46,7 +47,6 @@ class DeviceUploadController extends Controller
         $page = $request->get('page') ?: 1;
         $csv = $csvHandler->getFileForFileName($file->location);
 
-        $recordCount = count($csv);
 
         $devices = collect($csv)->forPage($page, 10);
 
@@ -59,7 +59,7 @@ class DeviceUploadController extends Controller
             $previousLink = url()->current() . '?page=' . $previousPage;
         }
 
-        if ($page * 10 >= $recordCount)
+        if ($page * 10 >= $file->expected_device_count)
         {
             $nextLink = null;
         }
@@ -76,7 +76,7 @@ class DeviceUploadController extends Controller
 
         return view('approve', [
             'devices' => $devices,
-            'recordCount' => $recordCount,
+            'recordCount' => $file->expected_device_count,
             'csvJson' => json_encode($csv),
             'links' => $links,
             'file' => $file
