@@ -12,10 +12,13 @@ use App\DeviceHandler\DeviceUploadHandler;
 use App\Providers\RouteServiceProvider;
 use App\Jobs\ProcessDevice;
 use App\Http\Controllers\Session;
+use App\Models\File;
+use Database\Factories\FileFactory;
+use Illuminate\Support\Facades\Storage;
 
 class DeviceUploadController extends Controller
 {
-    public function uploadFile(Request $request, DeviceUploadHandler $uploadHandler, CsvHandler $csvHandler)
+    public function uploadFile(Request $request, DeviceUploadHandler $uploadHandler, CsvHandler $csvHandler, FileFactory $fileFactory)
     {
         $request->validate([
             'file' => 'mimes:csv'
@@ -23,19 +26,66 @@ class DeviceUploadController extends Controller
 
         $file = $request->file('file');
 
-        $csv = $csvHandler->saveCsvAndReturnArrayOfRecords($file, $request->user()->id);
+        $fileName = $csvHandler->saveCsvAndReturnFileName($file, $request->user()->id);
+
+        $modelFile = $fileFactory->createFromArray(
+            [
+                'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                'location' => $fileName,
+                'user_id' => Auth::user()->id
+            ]
+        );
+
+
+        return redirect()->route('approve-list', $modelFile);
+
+    }
+
+    public function approveList(Request $request, File $file, CsvHandler $csvHandler)
+    {
+        $page = $request->get('page') ?: 1;
+        $csv = $csvHandler->getFileForFileName($file->location);
+
+        $recordCount = count($csv);
+
+        $devices = collect($csv)->forPage($page, 10);
+
+        if ($page == 1)
+        {
+            $previousLink = null;
+        }
+        else {
+            $previousPage = $page - 1;
+            $previousLink = url()->current() . '?page=' . $previousPage;
+        }
+
+        if ($page * 10 >= $recordCount)
+        {
+            $nextLink = null;
+        }
+        else {
+            $nextPage = $page + 1;
+            $nextLink = url()->current() . '?page=' . $nextPage;
+        }
+
+        $links = [
+            'previous' => ['url' => $previousLink, 'label' => '&laquo; Previous'],
+            'next' => ['url' => $nextLink, 'label' => 'Next &raquo;']
+        ];
 
 
         return view('approve', [
-            'filename' => $file->getClientOriginalName(),
-            'recordCount' => count($csv),
-            'csvJson' => json_encode($csv)
+            'devices' => $devices,
+            'recordCount' => $recordCount,
+            'csvJson' => json_encode($csv),
+            'links' => $links,
+            'file' => $file
         ]);
     }
 
-    public function approvedFile(Request $request, DeviceUploadHandler $uploadHandler)
+    public function approvedFile(Request $request, File $file, DeviceUploadHandler $uploadHandler, CsvHandler $csvHandler)
     {
-        $csv = json_decode($request->get('csv'), true);
+        $csv = $csvHandler->getFileForFileName($file->location);
 
         $numberOfJobsPerMin = 25;
 
@@ -44,9 +94,11 @@ class DeviceUploadController extends Controller
         $cycle = 1;
 
         $delay = 1;
-
+        
         foreach ($csv as $deviceRecord)
         {
+
+            $deviceRecord['file_id'] = $file->id;
 
             if (!array_filter($deviceRecord))
             {
@@ -55,15 +107,23 @@ class DeviceUploadController extends Controller
 
             if ($runNumber % $numberOfJobsPerMin == 0)
             {
-                $delay = 30 * $cycle;
+                $delay = 60 * $cycle;
                 $cycle += 1;
             }
-            // dd(json_encode($deviceRecord));
-            // dispatch(new ProcessDevice(json_encode($deviceRecord)));
-            ProcessDevice::dispatch(json_encode($deviceRecord), Auth::user()->tokens->last()->token)->delay($delay);
+
+
+            ProcessDevice::dispatch(json_encode($deviceRecord))->delay($delay);
             $runNumber += 1;
         }
 
         return redirect()->intended(RouteServiceProvider::HOME);
+    }
+    
+    public function deleteFile(File $file)
+    {
+        Storage::delete($file->location);
+        $file->delete();
+
+        return redirect()->route('dashboard');
     }
 }

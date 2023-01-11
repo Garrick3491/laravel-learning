@@ -10,39 +10,40 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-purple-200">
                 <div class="max-w-7xl p-6 bg-white border border-purple-200 rounded-lg">
-                    <p class="mb-3 font-normal">The file {{$filename}} contains {{$recordCount}} records.
+                    <p class="mb-3 font-normal">The file {{$file->name}} contains {{$recordCount}} records.
                 </div>
                 <br>
-                <form action="{{route('device-upload-approve')}}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            @if ($message = Session::get('success'))
-                                <div class="alert alert-success">
-                                    <strong>{{ $message }}</strong>
-                                </div>
+                @foreach ($devices as $device)
+                <div class="max-w-7xl p-6 bg-white border border-purple-200 rounded-lg">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight">
+                            {{ $device['name'] }}
+                    </h5>
+                    <br>
+                    <p class="mb-3 font-normal">Address: {{$device['address']}}</p>
+                    <p class="mb-3 font-normal">Geographic Coordinates: {{$device['latitude']}}, {{$device['longitude']}}</p>
+                    <p class="mb-3 font-normal">Device: {{ $device['model']}} - {{ $device['device_type'] }} - {{$device['manufacturer']}}</p>
+                    <p class="mb-3 font-normal">Install Date: {{$device['install_date']}}</p>
+                    <p class="mb-3 font-normal">Notes: {{$device['notes']}}</p>
+                    <p class="mb-3 font-normal">EUI: {{$device['eui']}}</p>
+                    <p class="mb-3 font-normal">Serial Number: {{$device['serial_number']}}</p>
+                </div>
+                <br>
+                @endforeach
+                <ul class="inline-flex -space-x-px">
+                    @foreach ($links as $link)
+                        <li>
+                            @if($link['url'] == null)
+                                <a aria-current="page" class="px-3 py-2 text-xs font-medium text-center text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{!!$link['label']!!}</a>
+                            @else
+                                <a href="{{$link['url']}}" class="px-3 py-2 text-xs font-medium text-center text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">{!!$link['label']!!}</a>
                             @endif
-                            @if ($message = Session::get('error'))
-                            <div class="alert alert-error">
-                                    <strong>{{ $message }}</strong>
-                            </div>
-                            @endif
-                            @if (count($errors) > 0)
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            @endif
-                            <div class="custom-file">
-                                <input name="csv" class="block w-full text-sm border border-purple-300 rounded-lg cursor-pointer focus:outline-none" id="file_input" type="hidden" value="{{$csvJson}}">
-                            </div>
-                        <br>
-                        <button type="submit" name="submit" class="px-3 py-2 text-xs font-medium text-center text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
-                            Approve File
-                        </button>
-                        <a class="px-3 py-2 text-xs font-medium text-center text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" href="{{route('dashboard')}}" onclick="return confirm('Are you sure?')">Cancel Upload</a>
-                    </form>
+                        </li>
+                    @endforeach
+                </ul>
+                <ul class="inline-flex -space-x-px">
+                    <a class="px-3 py-2 text-xs font-medium text-center text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" href="{{route('device-upload-approve', $file->id)}}">Approve Upload</a>
+                    <a class="px-3 py-2 text-xs font-medium text-center text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" href="{{route('cancel-list', $file->id)}}" onclick="return confirm('Are you sure?')">Cancel Upload</a>
+                </ul>
             </div>
         </div>
     </div>

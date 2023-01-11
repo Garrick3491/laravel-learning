@@ -22,6 +22,12 @@ class Device extends Model
         'install_date',
         'notes',
         'eui',
-        'serial_number'
+        'serial_number',
+        'file_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(File::class);
+    }
 }

@@ -46,7 +46,8 @@ class DeviceFactory extends Factory
            'install_date',
            'notes',
            'eui',
-           'serial_number'
+           'serial_number',
+           'file_id'
         ];
 
         foreach ($keys as $key)
@@ -58,17 +59,7 @@ class DeviceFactory extends Factory
         }
 
         $device = Device::create($deviceArray);
-        // $device->name = $deviceArray['name'];
-        // $device->address = $deviceArray['address'];
-        // $device->longitude = $deviceArray['longitude'];
-        // $device->latitude = $deviceArray['latitude'];
-        // $device->device_type = $deviceArray['device_type'];
-        // $device->manufacturer = $deviceArray['manufacturer'];
-        // $device->model = $deviceArray['model'];
-        // $device->install_date = new \DateTime($deviceArray['install_date']);
-        // $device->notes = $deviceArray['notes'];
-        // $device->eui = $deviceArray['eui'];
-        // $device->serial_number = $device['serial_number'];
+
         $device->save();
 
         return $device;

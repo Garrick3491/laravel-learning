@@ -28,6 +28,7 @@ class DashboardController extends Controller
                 $devices = [];
                 $links = [];
             }
+
         }
         catch(ApiErrorException $e)
         {

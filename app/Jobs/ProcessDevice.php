@@ -18,6 +18,7 @@ class ProcessDevice implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public string $deviceData;
+    public int $fileId;
     /**
      * Create a new job instance.
      *

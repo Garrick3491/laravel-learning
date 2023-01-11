@@ -9,6 +9,7 @@ use App\Providers\RouteServiceProvider;
 use Database\Factories\DeviceFactory;
 use App\Exceptions\Api\MissingDataException;
 use Illuminate\Support\Facades\Route;
+use App\Models\File;
 
 class DeviceController extends Controller
 {

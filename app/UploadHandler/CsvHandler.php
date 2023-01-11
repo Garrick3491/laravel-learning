@@ -10,29 +10,34 @@ use Carbon\Carbon;
 class CsvHandler {
 
 
-    public function saveCsvAndConvertToJson(UploadedFile $file, int $userId): string
-    {
-        $csv = $this->saveCsvAndReturnArrayOfRecords($file, $userId);
-
-        $json = json_encode($csv);
-
-        return $json;
-    }
-
-    public function saveCsvAndReturnArrayOfRecords(UploadedFile $file, int $userId)
+    public function saveCsvAndReturnFileName(UploadedFile $file, int $userId): string
     {
         $destinationPath = 'uploads';
         $timestamp = Carbon::now();
 
-        Storage::put('uploads/'.$userId .'/' . $file->getClientOriginalName() . '-' . $timestamp->timestamp, file_get_contents($file->getRealPath()));
+        $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
-        $string = Storage::get('uploads/'.$userId .'/' . $file->getClientOriginalName() . '-' . $timestamp->timestamp);
+        $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+        Storage::put("uploads/$userId/$fileName - $timestamp->timestamp.$extension", file_get_contents($file->getRealPath()));
+
+        return "uploads/$userId/$fileName - $timestamp->timestamp.$extension";
+    }
+
+    public function saveCsvAndReturnArrayOfRecords(UploadedFile $file, int $userId)
+    {
+        $fileName = $this->saveCsvAndReturnFileName($file, $userId);
+
+        return $this->getFileForFileName($fileName);
+    }
+
+    public function getFileForFileName(string $fileName)
+    {
+        $string = Storage::get($fileName);
 
         $csv = Reader::createFromString($string);
         $csv->setHeaderOffset(0);
 
         return $csv;
     }
-
-
 }
